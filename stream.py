@@ -2,10 +2,20 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 from keys import *
+import json
+
+file_ = open("tweets.json", "a")
+tweets = []
 
 class StdOutListener(StreamListener):
+
     def on_data(self, data):
-        print data
+        tweets.append(json.loads(data))
+        file_.write(data)
+
+        print "\n"
+        print json.loads(data)["text"]
+
         return True
 
     def on_error(self, status):
@@ -13,8 +23,8 @@ class StdOutListener(StreamListener):
 
 if __name__ == '__main__':
     l = StdOutListener()
-    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-    stream = Stream(auth, l)
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
 
-    stream.filter(track=['python', 'javascript', 'ruby'])
+    stream = Stream(auth, l)
+    stream.filter(track=['football'])
