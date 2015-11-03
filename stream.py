@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
@@ -10,11 +13,15 @@ tweets = []
 class StdOutListener(StreamListener):
 
     def on_data(self, data):
-        tweets.append(json.loads(data))
-        file_.write(data)
+        if len(tweets)>99:
+            return False
 
-        print "\n"
-        print json.loads(data)["text"]
+        tweet = json.loads(data)
+
+        if "created_at" in tweet and tweet["lang"]=="en" and not tweet["in_reply_to_status_id"]:
+            tweets.append(json.loads(data))
+            file_.write(data)
+            print json.loads(data)["text"]
 
         return True
 
@@ -27,4 +34,4 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret)
 
     stream = Stream(auth, l)
-    stream.filter(track=['football'])
+    stream.sample()
