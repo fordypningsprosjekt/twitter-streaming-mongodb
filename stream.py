@@ -19,10 +19,9 @@ class StdOutListener(StreamListener):
 
         tweet = json.loads(data)
 
-        if "created_at" in tweet and tweet["lang"]=="en" and (".@" not in tweet["text"]) and not (tweet["in_reply_to_status_id"] or tweet["entities"]["urls"] or ("retweeted_status" in tweet)):
-            if not "media" in tweet["entities"]:
-                tweets.append(json.loads(data))
-                file_.write(data)
+        if "created_at" in tweet and tweet["lang"]=="en" and (".@" not in tweet["text"]) and not (tweet["in_reply_to_status_id"] or tweet["entities"]["urls"] or ("retweeted_status" in tweet)) and not "media" in tweet["entities"] and not "@" == tweet["text"][0] and tweet["text"] > 5:
+            tweets.append(json.loads(data))
+            file_.write(data)
 
         return True
 
