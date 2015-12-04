@@ -14,7 +14,7 @@ tweets = []
 class StdOutListener(StreamListener):
 
     def on_data(self, data):
-        if len(tweets)>1000:
+        if len(tweets)>50:
             return False
 
         tweet = json.loads(data)
