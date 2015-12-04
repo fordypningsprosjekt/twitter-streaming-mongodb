@@ -8,21 +8,33 @@ from keys import *
 import json
 import re
 
-file_ = open("tweets3.json", "a")
+file_ = open("tweets8.json", "a")
 tweets = []
 
 class StdOutListener(StreamListener):
 
     def on_data(self, data):
-        if len(tweets)>10000:
+        if len(tweets)>1000:
             return False
 
         tweet = json.loads(data)
 
-        if "created_at" in tweet and tweet["lang"]=="en" and (".@" not in tweet["text"]) and not (tweet["in_reply_to_status_id"] or tweet["entities"]["urls"] or ("retweeted_status" in tweet)) and not "media" in tweet["entities"] and not "@" == tweet["text"][0] and tweet["text"] > 5:
-            tweets.append(json.loads(data))
-            file_.write(data)
 
+        if "created_at" in tweet:
+            if tweet["lang"]=="en": 
+                if ".@" not in tweet["text"]: 
+                    if not tweet["in_reply_to_status_id"]:
+                        if not tweet["entities"]["urls"]:
+                            if not "retweeted_status" in tweet:
+                                if not "media" in tweet["entities"]:
+                                    if not "@" == tweet["text"][0]:
+                                        if tweet["text"] > 5:
+                                            if not "#MTVStars" in tweet["text"]:
+                                                if not "Weather Channel" in tweet["text"]:
+                                                    tweets.append(json.loads(data))
+                                                    file_.write(data)
+                                                    if len(tweets)%50==0:
+                                                        print tweet["text"]
         return True
 
     def on_error(self, status):

@@ -2,7 +2,7 @@ import json
 from pprint import pprint
 
 data = []
-with open('tweets.json') as f:
+with open('tweets2.json') as f:
     for line in f:
         data.append(json.loads(line))
 
