@@ -7,17 +7,20 @@ from tweepy import Stream
 from keys import *
 import json
 import re
+import datetime
 
-file_ = open("29jan_tweets.json", "a")
+date = datetime.date.today().strftime("%B_%d_%Y")
+
+file_ = open(date.lower() + ".json", "a")
 tweets = []
 
 class StdOutListener(StreamListener):
 
     def on_data(self, data):
-        try:
-            if len(tweets)>100000:
-                return False
+        if len(tweets)>100000:
+            return False
 
+        try:
             tweet = json.loads(data)
 
             if "created_at" in tweet:
@@ -30,14 +33,15 @@ class StdOutListener(StreamListener):
                                                 if not "Weather Channel" in tweet["text"]:
                                                     tweets.append(json.loads(data))
                                                     file_.write(data)
-                                                    if len(tweets)%50==0:
-                                                        print tweet["text"]
-            return True
-        except:
-            print "fail"
+                                                    return True
+
+        except BaseException as e:
+            print("Error on_data: %s" % str(e))
+        return True
 
     def on_error(self, status):
         print status
+        return True
 
 class twitterStats():
     file_.read
